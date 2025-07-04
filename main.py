@@ -48,8 +48,7 @@ def main():
                     start_wait_time = time.time()
                 elif time.time() - start_wait_time > 180:
                     if is_cursor_top_left():
-                        print("Вимкнення звуку для long wait.")
-                        config["play_long_wait_status"] = False
+                        off_long_wait_music()
                     long_wait_status(config.get("play_long_wait_status", True))
                     status = "L"
         time.sleep(1)        
@@ -59,7 +58,7 @@ def main():
             print("Раунд почався!")
             start_round_status(screenshot)
             break
-        time.sleep(1)
+        time.sleep(0.3)
 
 if __name__ == "__main__":
     print("Запуск програми...")
