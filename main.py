@@ -1,4 +1,5 @@
 
+from calendar import c
 from config import config 
 from detection import take_screenshot, circle_color, start_round, flush_input
 from action import *
@@ -6,7 +7,7 @@ import time
 
 def main():
     status = None
-    settings = {}
+    first_no_find = False
     while True:
         screenshot = take_screenshot()
         color = circle_color(screenshot)
@@ -18,11 +19,21 @@ def main():
                 if color == "Y":
                     status = "Y"
                     start_wait_time = time.time()
+                    if not config["settings"].get("play_long_wait", False):
+                        config["settings"]["play_long_wait"] = True
+                        print("Увімкнено відтворення довгого очікування")
+                    first_no_find = False
                     wait_status()
                 continue
             # time.sleep(0.4)
         else:
             if not color:
+                if not first_no_find:
+                    first_no_find = True
+                    print("Втрачено жовтий кружок, очікування...")
+                    time.sleep(0.4)
+                    continue
+
                 if status == "L":
                     status = None
                     continue
