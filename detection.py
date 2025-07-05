@@ -25,7 +25,7 @@ def take_screenshot()-> Image.Image:
 
 yellow_circle_template = cv2.imread('static/yellow_circle.png', cv2.IMREAD_COLOR)
 green_circle_template = cv2.imread('static/green_circle.png', cv2.IMREAD_COLOR)
-start_round_template = cv2.imread('static/start_round_v2.png', cv2.IMREAD_COLOR)
+start_round_template = cv2.imread('static/start_round_v3.png', cv2.IMREAD_COLOR)
 
 def img_show(img_path):
     Image.open(img_path).show()
@@ -46,7 +46,7 @@ def match_template(img, template:list, min_val=0.8)-> list[float]:
                 bottom_right = (top_left[0] + template_w, top_left[1] + template_h)
                 cv2.rectangle(screenshot, top_left, bottom_right, (0, 255, 0), 2)
                 # cv2.imshow("Matched Result", screenshot)
-                fn=f'static/f/{time.strftime('%Y%m%d_%H%-M%-S')}_({val:.3f}).png'
+                fn=f'static/f/{time.strftime('%Y%m%d%H%M%S')}_({val:.3f}).png'
                 cv2.imwrite(fn, screenshot)
                 # img_show(fn)
 
@@ -74,7 +74,15 @@ def start_round(img):
         return True
     if 'debug' in config:
         #save image
-        fn = f'static/s/{time.strftime("%Y%m%d_%H-%M-%S")}_({start_round[0]:.3f})_start_round.png'
+        fn = f'static/s/{time.strftime("%Y%m%d%H%M%S")}_({start_round[0]:.3f})_start_round.png'
         img.save(fn)
     return False
 
+def flush_input():
+    if os.name == 'nt':  # Windows
+        import msvcrt
+        while msvcrt.kbhit():
+            msvcrt.getch()
+    else:  # Unix/Linux/Mac
+        import termios
+        termios.tcflush(sys.stdin, termios.TCIFLUSH)

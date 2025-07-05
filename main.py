@@ -1,7 +1,6 @@
 
-from operator import is_
 from config import config 
-from detection import take_screenshot, circle_color, start_round
+from detection import take_screenshot, circle_color, start_round, flush_input
 from action import *
 import time
 
@@ -20,11 +19,6 @@ def main():
                     status = "Y"
                     start_wait_time = time.time()
                     wait_status()
-                
-                elif color == "G":
-                    status = "G"
-                    starting_status()
-                    break
                 continue
             # time.sleep(0.4)
         else:
@@ -33,6 +27,7 @@ def main():
                     status = None
                     continue
                 if status == "N":
+
                     no_find_status()
                 status = "N"
                 # time.sleep(1)
@@ -50,6 +45,7 @@ def main():
                     if is_cursor_top_left():
                         off_long_wait_music()
                     long_wait_status(config.get("play_long_wait_status", True))
+                    screenshot.save(f"debug/no_find/{time.strftime('%Y%m%d%H%M%S')}_({color}).png")
                     status = "L"
         time.sleep(1)        
     while True:
@@ -58,10 +54,11 @@ def main():
             print("Раунд почався!")
             start_round_status(screenshot)
             break
-        time.sleep(0.3)
+        time.sleep(0.2)
 
 if __name__ == "__main__":
     print("Запуск програми...")
+    create_screenshot_dir()
     if 'debug' in config:
         print("Режим налагодження увімкнено.")
     while True:
@@ -69,6 +66,7 @@ if __name__ == "__main__":
         try:
             main()
         except KeyboardInterrupt:
+            config["play_long_wait_status"] = True  # type: ignore # Повертаємо відтворення довгого очікування
             print("\nПрограма зупинена користувачем.")
-
+        flush_input()
         input("Натисніть Enter, щоб перезапустити...")  # Додано для зручності

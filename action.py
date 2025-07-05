@@ -2,6 +2,7 @@ from config import config
 import telebot # type: ignore 
 import pygame 
 import pyautogui
+import os
 
 bot = telebot.TeleBot(config["TOKEN_BOT"])
 pygame.mixer.init()
@@ -15,11 +16,13 @@ def wait_status():
 
 def starting_status():
     #музика + стікер
+    print("Starting...")
     bot.send_sticker(chat_id=config["chat_id"], sticker=config["starting_sticker_id"], message_thread_id=config.get("message_thread_id"))
     pygame.mixer.music.load("static/starting.mp3")
     pygame.mixer.music.play()
 
 def no_find_status():
+    print("Не знайдено жовтий кружок.")
     if not pygame.mixer.music.get_busy():
         pygame.mixer.music.load("static/no_find.mp3")
         pygame.mixer.music.play()
@@ -43,3 +46,6 @@ def is_cursor_top_left() -> bool:
     if 'debug' in config:
         print(f"Координати курсора: ({x}, {y})")
     return x < 50 and y < 50
+
+def create_screenshot_dir():
+    os.makedirs("debug/no_find", exist_ok=True)
