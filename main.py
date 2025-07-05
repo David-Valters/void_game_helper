@@ -6,7 +6,7 @@ import time
 
 def main():
     status = None
-
+    settings = {}
     while True:
         screenshot = take_screenshot()
         color = circle_color(screenshot)
@@ -27,7 +27,7 @@ def main():
                     status = None
                     continue
                 if status == "N":
-                    screenshot.save(f"debug/no_find/{time.strftime('%Y%m%d%H%M%S')}_({color}).png")
+                    screenshot.save(f"debug/no_find/{time.strftime('%Y-%m-%d_%H-%M-%S')}_({color}).png")
                     no_find_status()
                 status = "N"
                 # time.sleep(1)
@@ -42,9 +42,9 @@ def main():
                 if start_wait_time is None:
                     start_wait_time = time.time()
                 elif time.time() - start_wait_time > 180:
-                    if is_cursor_top_left():
-                        off_long_wait_music()
-                    long_wait_status(config.get("play_long_wait_status", True))                    
+                    if config["settings"].get("play_long_wait", True):
+                        config["settings"]["play_long_wait"] = False # Вимикаємо відтворення довгого очікування
+                        long_wait_status()
                     status = "L"
         time.sleep(1)        
     while True:
@@ -63,6 +63,7 @@ if __name__ == "__main__":
     while True:
         #KeyboardInterrupt
         try:
+            config["settings"] = {}  # Скидаємо налаштування перед кожним запуском
             main()
         except KeyboardInterrupt:
             config["play_long_wait_status"] = True  # type: ignore # Повертаємо відтворення довгого очікування

@@ -27,11 +27,9 @@ def no_find_status():
         pygame.mixer.music.load("static/no_find.mp3")
         pygame.mixer.music.play()
 
-def off_long_wait_music():
+def off_music():
     if pygame.mixer.music.get_busy():
         pygame.mixer.music.stop()
-    print("Звук для long wait вимкнено.")
-    config["play_long_wait_status"] = False  # Вимикаємо відтворення довгого очікування
 
 def long_wait_status(playing: bool = True):
     if playing and not pygame.mixer.music.get_busy():

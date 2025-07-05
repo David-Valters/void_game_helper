@@ -1,6 +1,6 @@
 from dotenv import dotenv_values # type: ignore
 
-config = {
+config:dict[str,str|None|dict] = {
     **dotenv_values(".env"),
 }
 
