@@ -48,7 +48,8 @@ def main():
                 status = "G"
                 break
 
-            elif color == "Y":                
+            elif color == "Y":     
+                first_no_find = False           
                 #якщо пройшло більше 3 минут
                 if start_wait_time is None:
                     start_wait_time = time.time()
