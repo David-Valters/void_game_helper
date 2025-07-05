@@ -27,7 +27,7 @@ def main():
                     status = None
                     continue
                 if status == "N":
-
+                    screenshot.save(f"debug/no_find/{time.strftime('%Y%m%d%H%M%S')}_({color}).png")
                     no_find_status()
                 status = "N"
                 # time.sleep(1)
@@ -44,8 +44,7 @@ def main():
                 elif time.time() - start_wait_time > 180:
                     if is_cursor_top_left():
                         off_long_wait_music()
-                    long_wait_status(config.get("play_long_wait_status", True))
-                    screenshot.save(f"debug/no_find/{time.strftime('%Y%m%d%H%M%S')}_({color}).png")
+                    long_wait_status(config.get("play_long_wait_status", True))                    
                     status = "L"
         time.sleep(1)        
     while True:
