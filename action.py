@@ -1,8 +1,11 @@
+import time
 from config import config
 import telebot # type: ignore 
 import pygame 
 import pyautogui
 import os
+
+from detection import get_wait_time_window
 
 bot = telebot.TeleBot(config["TOKEN_BOT"])
 pygame.mixer.init()
@@ -14,15 +17,21 @@ def wait_status():
     pygame.mixer.music.load("static/wait.mp3")
     pygame.mixer.music.play()
 
-def starting_status():
+def starting_status(img):
     #музика + стікер
     print("Starting...")
-    bot.send_sticker(chat_id=config["chat_id"], sticker=config["starting_sticker_id"], message_thread_id=config.get("message_thread_id"))
     pygame.mixer.music.load("static/starting.mp3")
     pygame.mixer.music.play()
+    bot.send_sticker(chat_id=config["chat_id"], sticker=config["starting_sticker_id"], message_thread_id=config.get("message_thread_id"))
+    img = get_wait_time_window(img)
+    if img:
+        bot.send_photo(chat_id=config["chat_id"], photo=img, message_thread_id=config.get("message_thread_id"))
+    else:
+        print("Не знайдено вікно очікування.")
+        img.save(f"debug/no_find/{time.strftime('%Y-%m-%d_%H-%M-%S')}_(wait_time).png")
 
 def no_find_status():
-    print("Не знайдено жовтий кружок.")
+    print("Втрачено жовтий кружок.")
     if not pygame.mixer.music.get_busy():
         pygame.mixer.music.load("static/no_find.mp3")
         pygame.mixer.music.play()
@@ -47,3 +56,5 @@ def is_cursor_top_left() -> bool:
 
 def create_screenshot_dir():
     os.makedirs("debug/no_find", exist_ok=True)
+    os.makedirs("debug/f", exist_ok=True)
+    os.makedirs("debug/s", exist_ok=True)

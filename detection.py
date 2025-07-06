@@ -23,7 +23,7 @@ def take_screenshot()-> Image.Image:
     else:
         return pyautogui.screenshot()
 
-yellow_circle_template = cv2.imread('static/yellow_circle.png', cv2.IMREAD_COLOR)
+yellow_circle_template = cv2.imread('static/yellow_circle_v2.png', cv2.IMREAD_COLOR)
 green_circle_template = cv2.imread('static/green_circle.png', cv2.IMREAD_COLOR)
 start_round_template = cv2.imread('static/start_round_v3.png', cv2.IMREAD_COLOR)
 
@@ -39,15 +39,16 @@ def match_template(img, template:list, min_val=0.8)-> list[float]:
         _, val, _, max_loc = cv2.minMaxLoc(res)
         results.append(val)
         if 'debug' in config:
+            n='s'
             if val > min_val:
-                print(f"Знайдено шаблон з ймовірністю {val:.2f}")
-                template_h, template_w = tmpl.shape[:2]
-                top_left = max_loc
-                bottom_right = (top_left[0] + template_w, top_left[1] + template_h)
-                cv2.rectangle(screenshot, top_left, bottom_right, (0, 255, 0), 2)
-                # cv2.imshow("Matched Result", screenshot)
-                fn=f'static/f/{time.strftime('%Y-%m-%d_%H-%M-%S')}_({val:.3f}).png'
-                cv2.imwrite(fn, screenshot)
+                n='f'            
+            template_h, template_w = tmpl.shape[:2]
+            top_left = max_loc
+            bottom_right = (top_left[0] + template_w, top_left[1] + template_h)
+            cv2.rectangle(screenshot, top_left, bottom_right, (0, 255, 0), 2)
+            # cv2.imshow("Matched Result", screenshot)
+            fn=f'debug/{n}/{time.strftime('%Y-%m-%d_%H-%M-%S')}_({val:.3f}).png'
+            cv2.imwrite(fn, screenshot)
                 # img_show(fn)
 
                 
@@ -55,6 +56,34 @@ def match_template(img, template:list, min_val=0.8)-> list[float]:
     if 'debug' in config:
         print(f"Результати збігу шаблонів: {results}")
     return results
+
+def get_template_position(img_array, template):
+    screenshot = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+    res = cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED)
+    _, v, _, top_left = cv2.minMaxLoc(res)    
+    # print(f"Знайдено шаблон з ймовірністю {v:.2f}") #TODO remove debug
+    return top_left
+
+# def get_contours(img_array):
+#     image_gray = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY)
+#     #show grey image
+#     cv2.imshow("Gray Image", image_gray)
+#     cv2.waitKey(0)  # Дайте час для відображення зображення
+#     _, thresh = cv2.threshold(image_gray, 200, 255, cv2.THRESH_BINARY_INV)
+#     contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+#     return contours
+
+def get_wait_time_window(img):
+    w, h = img.size
+    img = img.crop((0, 0, w , h // 2))
+    # img.show()
+    img_array = np.array(img)
+    cx, cy = get_template_position(img_array, green_circle_template)
+    l_x = cx - int(config.get('l_x', 16))
+    l_y = cy - int(config.get('l_y', 15))
+    r_x = cx + int(config.get('r_x', 320))
+    r_y = cy + int(config.get('r_y', 30))
+    return img.crop((l_x, l_y, r_x, r_y))
         
 
 def circle_color(img):
@@ -74,7 +103,7 @@ def start_round(img):
         return True
     if 'debug' in config:
         #save image
-        fn = f'static/s/{time.strftime('%Y-%m-%d_%H-%M-%S')}_({start_round[0]:.3f})_start_round.png'
+        fn = f'debug/s/{time.strftime('%Y-%m-%d_%H-%M-%S')}_({start_round[0]:.3f})_start_round.png'
         img.save(fn)
     return False
 

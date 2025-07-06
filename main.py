@@ -7,7 +7,7 @@ import time
 
 def main():
     status = None
-    first_no_find = False
+    last_trigger = 0
     while True:
         screenshot = take_screenshot()
         color = circle_color(screenshot)
@@ -21,35 +21,33 @@ def main():
                     start_wait_time = time.time()
                     if not config["settings"].get("play_long_wait", False):
                         config["settings"]["play_long_wait"] = True
-                        print("Увімкнено відтворення довгого очікування")
-                    first_no_find = False
+                        print("Увімкнено відтворення звуку довгого очікування")
                     wait_status()
                 continue
             # time.sleep(0.4)
         else:
             if not color:
-                if not first_no_find:
-                    first_no_find = True
-                    print("Втрачено жовтий кружок, очікування...")
+                if time.time() - last_trigger > 2.5:
+                    print("Не знайдено жовтий кружок, очікування...")
+                    last_trigger = time.time()
                     time.sleep(0.4)
                     continue
 
+                screenshot.save(f"debug/no_find/{time.strftime('%Y-%m-%d_%H-%M-%S')}_(wait).png")
                 if status == "L":
                     status = None
                     continue
                 if status == "N":
-                    screenshot.save(f"debug/no_find/{time.strftime('%Y-%m-%d_%H-%M-%S')}_({color}).png")
                     no_find_status()
                 status = "N"
                 # time.sleep(1)
 
             elif color == "G":
-                starting_status()
+                starting_status(screenshot)
                 status = "G"
                 break
 
-            elif color == "Y":     
-                first_no_find = False           
+            elif color == "Y":              
                 #якщо пройшло більше 3 минут
                 if start_wait_time is None:
                     start_wait_time = time.time()
