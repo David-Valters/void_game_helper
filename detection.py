@@ -23,7 +23,7 @@ def take_screenshot()-> Image.Image:
     else:
         return pyautogui.screenshot()
 
-yellow_circle_template = cv2.imread('static/yellow_circle_v2.png', cv2.IMREAD_COLOR)
+yellow_circle_template = cv2.imread('static/yellow_circle.png', cv2.IMREAD_COLOR)
 green_circle_template = cv2.imread('static/green_circle.png', cv2.IMREAD_COLOR)
 start_round_template = cv2.imread('static/start_round_v3.png', cv2.IMREAD_COLOR)
 
