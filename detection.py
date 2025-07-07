@@ -81,7 +81,7 @@ def get_wait_time_window(img):
     cx, cy = get_template_position(img_array, green_circle_template)
     l_x = cx - int(config.get('l_x', 16))
     l_y = cy - int(config.get('l_y', 15))
-    r_x = cx + int(config.get('r_x', 320))
+    r_x = cx + int(config.get('r_x', 430))
     r_y = cy + int(config.get('r_y', 30))
     return img.crop((l_x, l_y, r_x, r_y))
         

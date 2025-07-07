@@ -25,11 +25,11 @@ def starting_status(img):
     pygame.mixer.music.load("static/starting.mp3")
     pygame.mixer.music.play()
     if not 'NO_SEND' in config:
-        bot.send_sticker(chat_id=config["chat_id"], sticker=config["starting_sticker_id"], message_thread_id=config.get("message_thread_id"))
         img = get_wait_time_window(img)
         if img:
             bot.send_photo(chat_id=config["chat_id"], photo=img, message_thread_id=config.get("message_thread_id"))
         else:
+            bot.send_sticker(chat_id=config["chat_id"], sticker=config["starting_sticker_id"], message_thread_id=config.get("message_thread_id"))
             print("Не знайдено вікно очікування.")
             img.save(f"debug/no_find/{time.strftime('%Y-%m-%d_%H-%M-%S')}_(wait_time).png")
 
