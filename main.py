@@ -70,6 +70,8 @@ if __name__ == "__main__":
     create_screenshot_dir()
     if 'debug' in config:
         print("Режим налагодження увімкнено.")
+    if 'NO_SEND' in config:
+        print("Відправка повідомлень вимкнена.")
     while True:
         #KeyboardInterrupt
         try:
