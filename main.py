@@ -34,11 +34,11 @@ def main():
                     continue
 
                 screenshot.save(f"debug/no_find/{time.strftime('%Y-%m-%d_%H-%M-%S')}_(wait).png")
+                no_find_status()
                 if status == "L":
                     status = None
                     continue
-                if status == "N":
-                    no_find_status()
+                
                 status = "N"
                 # time.sleep(1)
 
