@@ -57,12 +57,12 @@ def main():
                         long_wait_status()
                     status = "L"
         time.sleep(1)        
-    while True:
-        screenshot = take_screenshot()
-        if start_round(screenshot):
-            print("Раунд почався!")
-            start_round_status(screenshot)
-            break
+    # while True:
+    #     screenshot = take_screenshot()
+    #     if start_round(screenshot):
+    #         print("Раунд почався!")
+    #         start_round_status(screenshot)
+    #         break
         time.sleep(0.2)
 
 if __name__ == "__main__":
