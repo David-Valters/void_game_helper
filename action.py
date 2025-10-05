@@ -27,7 +27,7 @@ def starting_status(img):
     if not 'NO_SEND' in config:
         img = get_wait_time_window(img)
         if img:
-            mes = "🟢Starting..."
+            mes = config.get("starting_message", "🟢Starting...")
             bot.send_photo(chat_id=config["chat_id"], photo=img, message_thread_id=config.get("message_thread_id"), caption=mes)
         else:
             bot.send_sticker(chat_id=config["chat_id"], sticker=config["starting_sticker_id"], message_thread_id=config.get("message_thread_id"))
